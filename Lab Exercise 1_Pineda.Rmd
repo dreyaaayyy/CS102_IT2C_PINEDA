@@ -1,0 +1,45 @@
+---
+title: "Lab Exercise 1_Pineda"
+output: pdf_document
+date: "2024-02-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(rvest)
+library(httr)
+library(polite)
+library(ggplot2)
+
+polite::use_manners(save_as = 'polite_scrape.R')
+```
+
+#Creating Objects for Dataset
+```{r}
+Name <- character(50)
+Price <-character(50)
+Ratings <- character(50)
+TotalNumberofReviews <- character(50)
+
+url <- "https://www.amazon.co.uk/s?k=longchamp&ref=sr_gnr_aps" 
+session <- bow(url, user_agent= "Educational Purposes")
+session
+
+#Product
+
+name <- scrape(session) %>%
+  html_nodes("span.a-size-base-plus.a-color-base.a-text-normal") %>%
+  html_text()
+
+name[1:60]
+
+price <- scrape(session) %>%
+  html_nodes("span.a-price-whole") %>%
+  html_text()
+price[1:60]
+```
