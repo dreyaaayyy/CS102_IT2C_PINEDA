@@ -8,7 +8,10 @@ date: "2024-02-08"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Scraping for Handbags
+
 ```{r}
+
 library(tidyverse)
 library(dplyr)
 library(rvest)
@@ -16,30 +19,56 @@ library(httr)
 library(polite)
 library(ggplot2)
 
-polite::use_manners(save_as = 'polite_scrape.R')
+Handbag_Products <- data.frame()
+
+HandbagLink1 = "https://www.amazon.co.uk/s?k=handbags&crid=TXLH0DAZWXCO&qid=1708264736&sprefix=handbags%2Caps%2C399&ref=sr_pg_1"
+
+session1 <- bow(HandbagLink1, user_agent = "Educational Purposes")
+
+ScrapeNodes <- function(selector){
+scrape(session1) %>%
+  html_nodes(selector) %>%
+  html_text(trim = TRUE)
+}
+
+ScrapedCategory <- "Handbags"
+
+ScrapedName <- ScrapeNodes("div.a-section.a-spacing-small puis-padding-left-small.puis-padding-right-small")
+ScrapedName <- ScrapedName[1:45]
+
+ScrapedPrice <- ScrapeNodes("span.a-price")
+ScrapedPrice <- ScrapedPrice[1:45]
+
+ScrapedRatings <- ScrapeNodes("i.a-icon a-icon-popover")
+ScrapedRatings <- ScrapedRatings[1:45]
+
+ScrapedReviews <- ScrapeNodes("i.a-icon.a-icon-star-small a-star-small-4.aok-align-bottom")
+ScrapedReviews <- ScrapedReviews[1:45]
+
+Handbags_Products <- rbind(Handbag_Products, data.frame(category = ScrapedCategory,name = ScrapedName,
+                    price = ScrapedPrice, ratings = ScrapedRatings,Num_of_reviews = ScrapedReviews))
+
+##############
+
+HandbagLink2 = "https://www.amazon.co.uk/s?k=handbags&page=2&crid=TXLH0DAZWXCO&qid=1708264709&sprefix=handbags%2Caps%2C399&ref=sr_pg_1"
+
+Session2 <- bow(HandbagLink2, user_agent = "Educational Purposes")
+
+ScrapedCategory <- "Handbags" 
+
+ScrapedName2 <- ScrapeNodes("div.a-section.a-spacing-small puis-padding-left-small.puis-padding-right-small")
+ScrapedName2 <- ScrapedName2[1:45]
+
+ScrapedPrice2 <- ScrapeNodes("div.a-row")
+ScrapedPrice2 <- ScrapedPrice2[1:45]
+
+ScrapedRatings2 <- ScrapeNodes("span.a-size-base.s-underline-text")
+ScrapedRatings2 <- ScrapedRatings2[1:45]
+
+ScrapedReviews2 <- ScrapeNodes("span.a-size-base.s-underline-text")
+ScrapedReviews2 <- ScrapedReviews2[1:45]
+
+Handbags_Products <- rbind(Handbag_Products, data.frame(category = ScrapedCategory,name = ScrapedName,
+                    price = ScrapedPrice, ratings = ScrapedRatings,Num_of_reviews = ScrapedReviews))
 ```
 
-#Creating Objects for Dataset
-```{r}
-Name <- character(50)
-Price <-character(50)
-Ratings <- character(50)
-TotalNumberofReviews <- character(50)
-
-url <- "https://www.amazon.co.uk/s?k=longchamp&ref=sr_gnr_aps" 
-session <- bow(url, user_agent= "Educational Purposes")
-session
-
-#Product
-
-name <- scrape(session) %>%
-  html_nodes("span.a-size-base-plus.a-color-base.a-text-normal") %>%
-  html_text()
-
-name[1:60]
-
-price <- scrape(session) %>%
-  html_nodes("span.a-price-whole") %>%
-  html_text()
-price[1:60]
-```
