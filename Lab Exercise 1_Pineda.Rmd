@@ -95,7 +95,7 @@ Handbags_Products <- rbind(Handbags_Products, data.frame(Category = ScrapedCateg
                 Price = ScrapedPrice, Ratings = ScrapedRatings,                     Num_of_reviews = ScrapedReviews))
 
 Handbags_Products <- Handbags_Products[1:100,]
-
+#write.csv(Handbags_Products,"Handbags_Products.csv")
 #View(Handbag_Products)
 
 ```
@@ -191,6 +191,7 @@ Suitcase_Products <- rbind(Suitcase_Products, data.frame(Category = ScrapedCateg
                     Price = ScrapedSuitcasePrice, Ratings = ScrapedSuitcaseRatings,Num_of_reviews = ScrapedSuitcaseReviews))
 
 Suitcase_Products <- Suitcase_Products[1:100,]
+#write.csv(Suitcase_Products,"Suitcase_Products.csv")
 
 #View(Suitcase_Products)
 ```
@@ -199,6 +200,7 @@ Merging Two Products
 
 ```{r}
 Scraped_Products <- rbind(Handbags_Products, Suitcase_Products)
+#write.csv(Scraped_Products, "ByCategory.csv")
 #View(Scraped_Products)
 ```
 
@@ -216,11 +218,11 @@ library(selectr)
 Product1 = data.frame()
 ScrapedCategory <- "Handbags"
 
-#####
+###
 
-Link = "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-reviews/B09GW13FN4/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews" 
+Link1_1 = "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-reviews/B09GW13FN4/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews" 
 
-SessionProd1 <- bow(Link, user_agent = "Educational Purpose")
+SessionProd1 <- bow(Link1_1, user_agent = "Educational Purpose")
   
 ScrapeNodes <- function(selector){
 scrape(SessionProd1) %>%
@@ -228,89 +230,78 @@ scrape(SessionProd1) %>%
   html_text(trim = TRUE)
 }
           
-      ScrapedName <- ScrapeNodes("h1.a-size-large.a-spacing-none.a-color-secondary")
+ScrapedName <- ScrapeNodes("div.a-size-large.a-spacing-none.a-color-secondary")
+ScrapedName <- ScrapedName[1:10]
       
-      ScrapedReviewer <- ScrapeNodes("span.a-profile-name")
-      ScrapedReviewer <- ScrapedReviewer[1:10]
+ScrapedReviewer <- ScrapeNodes("span.a-profile-name")
+ScrapedReviewer <- ScrapedReviewer[1:10]
 
+ScrapedReview <- ScrapeNodes("div.a-expander-content.reviewText.review-text-content.a-expander-partial-collapse-content")
+ScrapedReview <- ScrapedReview[1:10]
       
-      ScrapedReview <- ScrapeNodes("div.a-expander-content.reviewText.review-text-content.a-expander-partial-collapse-content")
-      ScrapedReview <- ScrapedReview[1:10]
+ScrapedDate <- ScrapeNodes("span.a-size-base.a-color-secondary.review-date")
+ScrapedDate <- ScrapedDate[1:10]
 
+ScrapedProductRating <- ScrapeNodes("div.a-row")
+ScrapedProductRating <- ScrapedProductRating[1:10]
+
+Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory,
+                Name = ScrapedName,
+                Reviewer = ScrapedReviewer,
+                Review = ScrapedReview, 
+                Date = ScrapedDate,
+                Ratings = ScrapedProductRating))
+
+###
       
-      ScrapedDate <- ScrapeNodes("span.a-size-base.a-color-secondary.review-date")
-      ScrapedDate <- ScrapedDate[1:10]
+Link1_2 = "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-reviews/B09GW13FN4/ref=cm_cr_getr_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
 
-      
-      ScrapedRating <- ScrapeNodes("div.a-row")
-      ScrapedRating <- ScrapedRating[1:10]
-
-      
-      Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory,Name = ScrapedName,
-                          Reviewer = ScrapedReviewer,
-                          Review = ScrapedReview,
-                          Date = ScrapedDate,
-                         Ratings = ScrapedRating))
-
-#####
-      
-Link2 = "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-reviews/B09GW13FN4/ref=cm_cr_getr_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
-
-SessionProd2 <- bow(Link2, user_agent = "Educational Purpose")  
+SessionProd2 <- bow(Link1_2, user_agent = "Educational Purpose")  
 
 
-      ScrapedReviewer2 <- ScrapeNodes("span.a-profile-name")
-      scrapedReviewer2 <- ScrapedReviewer2[1:10]
+ScrapedReviewer2 <- ScrapeNodes("span.a-profile-name")
+      ScrapedReviewer2 <- ScrapedReviewer2[1:10]
 
-      
-      ScrapedReview2 <- ScrapeNodes("span.a-size-base.review-text.review-text-content")
-      ScrapedReview2 <- ScrapedReview2[1:10]
+ScrapedReview2 <- ScrapeNodes("span.a-size-base.review-text.review-text-content")
+ScrapedReview2 <- ScrapedReview2[1:10]
 
-      
-      ScrapedDate2 <- ScrapeNodes("span.a-size-base.a-color-secondary.review-date")
-      ScrapedDate2 <- ScrapedDate2[1:10]
+ScrapedDate2 <- ScrapeNodes("span.a-size-base.a-color-secondary.review-date")
+ScrapedDate2 <- ScrapedDate2[1:10]
 
-      
-      ScrapedRating2 <- ScrapeNodes("div.a-row.a-spacing-none")
-      ScrapedRating2 <- ScrapedRating2[1:10]
+ScrapedProdRating2 <- ScrapeNodes("div.a-row.a-spacing-none")
+ScrapedProdRating2 <- ScrapedProdRating2[1:10]
 
-      
-      Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory, 
+Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory, 
                           Name = ScrapedName,
                           Reviewer = ScrapedReviewer2,
                           Review = ScrapedReview2,
                           Date = ScrapedDate2,
-                          Ratings = ScrapedRating2))
+                          Ratings = ScrapedProdRating2))
       
 #####
       
-Link3 = "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-reviews/B09GW13FN4/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+Link1_3 = "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-reviews/B09GW13FN4/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
 
-SessionProd3 <- bow(Link3, user_agent = "Educational Purpose")  
+SessionProd3 <- bow(Link1_3, user_agent = "Educational Purpose")  
 
- 
-      ScrapedReviewer3 <- ScrapeNodes("span.a-profile-name")
-      scrapedReviewer3 <- ScrapedReviewer3[1:10]
+ScrapedReviewer3 <- ScrapeNodes("span.a-profile-name")
+ScrapedReviewer3 <- ScrapedReviewer3[1:10]
 
-      
-      ScrapedReview3 <- ScrapeNodes("span.a-size-base.review-text.review-text-content")
-      ScrapedReview3 <- ScrapedReview3[1:10]
+ScrapedReview3 <- ScrapeNodes("span.a-size-base.review-text.review-text-content")
+ScrapedReview3 <- ScrapedReview3[1:10]
 
-      
-      ScrapedDate3 <- ScrapeNodes("span.a-size-base.a-color-secondary.review-date")
-      ScrapedDate3 <- ScrapedDate3[1:10]
+ScrapedDate3 <- ScrapeNodes("span.a-size-base.a-color-secondary.review-date")
+ScrapedDate3 <- ScrapedDate3[1:10]
 
-      
-      ScrapedRating3 <- ScrapeNodes("div.a-row.a-spacing-none")
-      ScrapedRating3 <- ScrapedRating3[1:10]
+ScrapedProdRating3 <- ScrapeNodes("div.a-row.a-spacing-none")
+ScrapedProdRating3 <- ScrapedProdRating3[1:10]
 
-      
-      Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory,
+Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory,
                           Name = ScrapedName,
-                          Reviewer = scrapedReviewer3,
+                          Reviewer = ScrapedReviewer3,
                           Review = ScrapedReview3,
                           Date = ScrapedDate3,
-                          Ratings = ScrapedRating3))
+                          Ratings = ScrapedProdRating3))
 
 #View(Product1)
 ```
@@ -328,9 +319,9 @@ ScrapedCategory <- "Handbags"
 
 #####
 
-Link = "https://www.amazon.co.uk/Miss-Lulu-Leather-Stylish-Shoulder/product-reviews/B07DD8GGNX/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews" 
+Link2_1 = "https://www.amazon.co.uk/Miss-Lulu-Leather-Stylish-Shoulder/product-reviews/B07DD8GGNX/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews" 
 
-SessionProd1 <- bow(Link, user_agent = "Educational Purpose")
+SessionProd1 <- bow(Link2_1, user_agent = "Educational Purpose")
   
 ScrapeNodes <- function(selector){
 scrape(SessionProd1) %>%
@@ -364,9 +355,9 @@ scrape(SessionProd1) %>%
 
 #####
       
-Link2 = "https://www.amazon.co.uk/Miss-Lulu-Leather-Stylish-Shoulder/product-reviews/B07DD8GGNX/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+Link2_2 = "https://www.amazon.co.uk/Miss-Lulu-Leather-Stylish-Shoulder/product-reviews/B07DD8GGNX/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
 
-SessionProd2 <- bow(Link2, user_agent = "Educational Purpose")  
+SessionProd2 <- bow(Link2_2, user_agent = "Educational Purpose")  
 
 
       ScrapedReviewer2 <- ScrapeNodes("span.a-profile-name")
@@ -385,7 +376,7 @@ SessionProd2 <- bow(Link2, user_agent = "Educational Purpose")
       ScrapedRating2 <- ScrapedRating2[1:10]
 
       
-      Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory, 
+      Product2 <- rbind(Product2, data.frame(Category = ScrapedCategory, 
                           Name = ScrapedName,
                           Reviewer = ScrapedReviewer2,
                           Review = ScrapedReview2,
@@ -394,9 +385,9 @@ SessionProd2 <- bow(Link2, user_agent = "Educational Purpose")
       
 #####
       
-Link3 = "https://www.amazon.co.uk/Miss-Lulu-Leather-Stylish-Shoulder/product-reviews/B07DD8GGNX/ref=cm_cr_arp_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+Link2_3= "https://www.amazon.co.uk/Miss-Lulu-Leather-Stylish-Shoulder/product-reviews/B07DD8GGNX/ref=cm_cr_arp_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
 
-SessionProd3 <- bow(Link3, user_agent = "Educational Purpose")  
+SessionProd3 <- bow(Link2_3, user_agent = "Educational Purpose")  
 
  
       ScrapedReviewer3 <- ScrapeNodes("span.a-profile-name")
@@ -415,7 +406,7 @@ SessionProd3 <- bow(Link3, user_agent = "Educational Purpose")
       ScrapedRating3 <- ScrapedRating3[1:10]
 
       
-      Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory,
+      Product2 <- rbind(Product2, data.frame(Category = ScrapedCategory,
                           Name = ScrapedName,
                           Reviewer = scrapedReviewer3,
                           Review = ScrapedReview3,
@@ -438,9 +429,9 @@ ScrapedCategory <- "Handbags"
 
 #####
 
-Link = "" 
+Link3_1 = "" 
 
-SessionProd1 <- bow(Link, user_agent = "Educational Purpose")
+SessionProd1 <- bow(Link3_1, user_agent = "Educational Purpose")
   
 ScrapeNodes <- function(selector){
 scrape(SessionProd1) %>%
@@ -466,7 +457,7 @@ scrape(SessionProd1) %>%
       ScrapedRating <- ScrapedRating[1:10]
 
       
-      Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory,Name = ScrapedName,
+      Product3 <- rbind(Product3, data.frame(Category = ScrapedCategory,Name = ScrapedName,
                           Reviewer = ScrapedReviewer,
                           Review = ScrapedReview,
                           Date = ScrapedDate,
@@ -474,9 +465,9 @@ scrape(SessionProd1) %>%
 
 #####
       
-Link2 = ""
+Link3_2 = ""
 
-SessionProd2 <- bow(Link2, user_agent = "Educational Purpose")  
+SessionProd2 <- bow(Link3_2, user_agent = "Educational Purpose")  
 
 
       ScrapedReviewer2 <- ScrapeNodes("")
@@ -495,7 +486,7 @@ SessionProd2 <- bow(Link2, user_agent = "Educational Purpose")
       ScrapedRating2 <- ScrapedRating2[1:10]
 
       
-      Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory, 
+      Product3 <- rbind(Product3, data.frame(Category = ScrapedCategory, 
                           Name = ScrapedName,
                           Reviewer = ScrapedReviewer2,
                           Review = ScrapedReview2,
@@ -504,9 +495,9 @@ SessionProd2 <- bow(Link2, user_agent = "Educational Purpose")
       
 #####
       
-Link3 = ""
+Link3_3 = ""
 
-SessionProd3 <- bow(Link3, user_agent = "Educational Purpose")  
+SessionProd3 <- bow(Link3_3, user_agent = "Educational Purpose")  
 
  
       ScrapedReviewer3 <- ScrapeNodes("")
@@ -525,11 +516,111 @@ SessionProd3 <- bow(Link3, user_agent = "Educational Purpose")
       ScrapedRating3 <- ScrapedRating3[1:10]
 
       
-      Product1 <- rbind(Product1, data.frame(Category = ScrapedCategory,
+      Product3 <- rbind(Product3, data.frame(Category = ScrapedCategory,
                           Name = ScrapedName,
                           Reviewer = scrapedReviewer3,
                           Review = ScrapedReview3,
                           Date = ScrapedDate3,
                           Ratings = ScrapedRating3))
 
+```
+
+Product 4
+```{r}
+library(dplyr)
+library(rvest)
+library(polite)
+library(httr)
+library(selectr)
+
+Product4 = data.frame()
+ScrapedCategory <- "Handbags"
+
+#####
+
+Link4_1 = "" 
+
+SessionProd1 <- bow(Link4_1, user_agent = "Educational Purpose")
+  
+ScrapeNodes <- function(selector){
+scrape(SessionProd1) %>%
+  html_nodes(selector) %>%
+  html_text(trim = TRUE)
+}
+          
+ScrapedName <- ScrapeNodes("")
+      
+ScrapedReviewer <- ScrapeNodes("")
+ScrapedReviewer <- ScrapedReviewer[1:10]
+
+ScrapedReview <- ScrapeNodes("")
+ScrapedReview <- ScrapedReview[1:10]
+
+ScrapedDate <- ScrapeNodes("e")
+ScrapedDate <- ScrapedDate[1:10]
+
+ScrapedRating <- ScrapeNodes("")
+ScrapedRating <- ScrapedRating[1:10]
+
+      
+Product4 <- rbind(Product4, data.frame(Category = ScrapedCategory,Name = ScrapedName,
+                          Reviewer = ScrapedReviewer,
+                          Review = ScrapedReview,
+                          Date = ScrapedDate,
+                         Ratings = ScrapedRating))
+
+#####
+      
+Link4_2 = ""
+
+SessionProd2 <- bow(Link4_2, user_agent = "Educational Purpose")  
+
+ScrapedReviewer2 <- ScrapeNodes("")
+ScrapedReviewer2 <- ScrapedReviewer2[1:10]
+
+ScrapedReview2 <- ScrapeNodes("")
+ScrapedReview2 <- ScrapedReview2[1:10]
+
+ScrapedDate2 <- ScrapeNodes("")
+ScrapedDate2 <- ScrapedDate2[1:10]
+
+ScrapedRating2 <- ScrapeNodes("")
+ScrapedRating2 <- ScrapedRating2[1:10]
+
+Product4 <- rbind(Product4, data.frame(Category = ScrapedCategory, 
+                          Name = ScrapedName,
+                          Reviewer = ScrapedReviewer2,
+                          Review = ScrapedReview2,
+                          Date = ScrapedDate2,
+                          Ratings = ScrapedRating2))
+      
+#####
+      
+Link4_3 = ""
+
+SessionProd3 <- bow(Link4_3, user_agent = "Educational Purpose")  
+
+ 
+      ScrapedReviewer3 <- ScrapeNodes("")
+      scrapedReviewer3 <- ScrapedReviewer3[1:10]
+
+      
+      ScrapedReview3 <- ScrapeNodes("")
+      ScrapedReview3 <- ScrapedReview3[1:10]
+
+      
+      ScrapedDate3 <- ScrapeNodes("")
+      ScrapedDate3 <- ScrapedDate3[1:10]
+
+      
+      ScrapedRating3 <- ScrapeNodes("")
+      ScrapedRating3 <- ScrapedRating3[1:10]
+
+      
+      Product3 <- rbind(Product3, data.frame(Category = ScrapedCategory,
+                          Name = ScrapedName,
+                          Reviewer = scrapedReviewer3,
+                          Review = ScrapedReview3,
+                          Date = ScrapedDate3,
+                          Ratings = ScrapedRating3))
 
