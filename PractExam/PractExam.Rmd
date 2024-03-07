@@ -1,0 +1,94 @@
+---
+title: "PractExam"
+author: "Pineda, Andrea Patrice A."
+date: "2024-03-07"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#A
+
+data ("warpbreaks")
+
+#A.1 - Find out, in a single command, which columns of warpbreaks are either numeric or integer. What are the data types of each column?
+
+NumericCol <- sapply(warpbreaks, is.numeric)
+NumericCol
+```
+
+```{r}
+#A.2 - How many observations does it have?
+
+Obs <- nrow(warpbreaks)
+Obs
+#There are 54 observations. The variables are breaks, wool, and tension. 
+```
+
+```{r}
+#A.3 - Is numeric a natural data type for the columns which are stored as such? Convert to integer when necessary.
+
+IntCol <- sapply(warpbreaks, is.integer) 
+IntCol
+
+NumOrIntCol <- warpbreaks[, NumericCol | IntCol] 
+NumOrIntCol
+``` 
+
+```{r}
+#A.4 - Error messages in R sometimes report the underlying type of an object rather than the user-level class. Derive from the following code and error message what the underlying type.
+
+#Without a valid dataset, the code can't determine the number of columns and generates an error.
+```
+
+```{r}
+#B
+
+#B.1 - Read the complete file using readLines.
+
+Lines <- readLines("exampleFile.txt")
+
+#B.2 - Separate the vector of lines into a vector containing comments and a vector containing the data. Hint: use grepl.
+
+Comments <- Lines[grepl("^//", Lines)]
+Comments
+
+DataLines <- Lines[!grepl("^//", Lines)]
+DataLines
+
+#B.3 - Extract the date from the first comment line.
+
+Date <- gsub("^// Survey data. Created : ", "", Comments[1])
+Date
+
+cat("It was created data", Date)
+
+#B.4a. - Split the character vectors in the vector containing data lines by semicolon (;) using strsplit.
+
+DataSplit <- strsplit(DataLines, ";")
+DataSplit
+
+#B.4b - Find the maximum number of fields retrieved by split. Append rows that are shorter with NA's.
+
+max_fields <- max(sapply(DataSplit, length))
+max_fields
+
+DataSplit <- lapply(DataSplit, function(x) c(x, rep(NA, max_fields - length(x))))
+DataSplit
+
+#B.4c - Use unlist and matrix to transform the data to row-column format.
+
+Matrix_Data <- matrix(unlist(DataSplit), ncol = max_fields, byrow = TRUE)
+Matrix_Data
+
+#B.4d - From comment lines 2-4, extract the names of the fields. Set these as colnames for the matrix you just created.
+
+Field_Names <- gsub("^// Field [0-9]+: ", "", Comments[2:4])
+Field_Names
+
+colnames(Matrix_Data) <- Field_Names
+colnames(Matrix_Data)
+```
