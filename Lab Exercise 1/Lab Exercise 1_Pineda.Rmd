@@ -1,0 +1,258 @@
+---
+title: "Lab Exercise 1_Pineda"
+output: pdf_document
+date: "2024-02-08"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Scraping for Handbags
+
+```{r}
+
+library(tidyverse)
+library(dplyr)
+library(rvest)
+library(httr)
+library(polite)
+library(ggplot2)
+
+Handbags_Products <- data.frame()
+
+HandbagLink1 = "https://www.amazon.co.uk/s?k=handbags&crid=TXLH0DAZWXCO&qid=1708264736&sprefix=handbags%2Caps%2C399&ref=sr_pg_1"
+
+Session1 <- bow(HandbagLink1, user_agent = "Educational Purposes")
+
+ScrapeNodes <- function(selector){
+scrape(Session1) %>%
+  html_nodes(selector) %>%
+  html_text(trim = TRUE)
+}
+
+ScrapedCategory <- "Handbags"
+
+ScrapedName <- ScrapeNodes("span.a-size-base-plus.a-color-base.a-text-normal")
+ScrapedName <- ScrapedName[1:45]
+
+ScrapedPrice <- ScrapeNodes("span.a-offscreen")
+ScrapedPrice <- ScrapedPrice[1:45]
+
+ScrapedRatings <- ScrapeNodes("span.a-icon-alt")
+ScrapedRatings <- ScrapedRatings[1:45]
+
+ScrapedReviews <- ScrapeNodes("span.a-size-base.s-underline-text")
+ScrapedReviews <- ScrapedReviews[1:45]
+
+Handbags_Products <- rbind(Handbags_Products, data.frame(Category = ScrapedCategory,Name = ScrapedName,
+                    Price = ScrapedPrice, Ratings = ScrapedRatings,Num_of_reviews = ScrapedReviews))
+
+##############
+
+HandbagLink2 = "https://www.amazon.co.uk/s?k=handbags&page=2&crid=TXLH0DAZWXCO&qid=1708264709&sprefix=handbags%2Caps%2C399&ref=sr_pg_1"
+
+Session2 <- bow(HandbagLink2, user_agent = "Educational Purposes")
+
+ScrapedCategory <- "Handbags" 
+
+ScrapedName2 <- ScrapeNodes("span.a-size-base-plus.a-color-base.a-text-normal")
+ScrapedName2 <- ScrapedName2[1:45]
+
+ScrapedPrice2 <- ScrapeNodes("span.a-offscreen")
+ScrapedPrice2 <- ScrapedPrice2[1:45]
+
+ScrapedRatings2 <- ScrapeNodes("div.a-row.a-size-small")
+ScrapedRatings2 <- ScrapedRatings2[1:45]
+
+ScrapedReviews2 <- ScrapeNodes("span.a-size-base.s-underline-text")
+ScrapedReviews2 <- ScrapedReviews2[1:45]
+
+Handbags_Products <- rbind(Handbags_Products, data.frame(Category = ScrapedCategory,Name = ScrapedName,
+                    Price = ScrapedPrice, Ratings = ScrapedRatings,Num_of_reviews = ScrapedReviews))
+
+###############
+
+HandbagLink3 = "https://www.amazon.co.uk/s?k=handbags&page=3&crid=TXLH0DAZWXCO&qid=1708513545&sprefix=handbags%2Caps%2C399&ref=sr_pg_2"
+
+Session3 <- bow(HandbagLink3, user_agent = "Educational Purpose")
+
+ScrapedCategory <- "Handbags"
+
+ScrapedName3 <- ScrapeNodes("span.a-size-base-plus.a-color-base.a-text-normal")
+ScrapedName3 <- ScrapedName3[1:45]
+
+ScrapedPrice3 <- ScrapeNodes("span.a-offscreen")
+ScrapedPrice3 <- ScrapedPrice3[1:45]
+
+ScrapedRatings3 <- ScrapeNodes("div.a-section.a-spacing-none.a-spacing-top-micro")
+ScrapedRatings3 <- ScrapedRatings3[1:45]
+
+ScrapedReviews3 <- ScrapeNodes("span.a-size-base.s-underline-text")
+ScrapedReviews3 <- ScrapedReviews3[1:45]
+
+Handbags_Products <- rbind(Handbags_Products, data.frame(Category = ScrapedCategory, Name = ScrapedName,
+                Price = ScrapedPrice, Ratings = ScrapedRatings,                     Num_of_reviews = ScrapedReviews))
+
+Handbags_Products <- Handbags_Products[1:100,]
+#write.csv(Handbags_Products,"Handbags_Products.csv")
+#View(Handbag_Products)
+
+```
+
+Scraping for Suitcase
+
+```{r}
+
+library(tidyverse)
+library(dplyr)
+library(rvest)
+library(httr)
+library(polite)
+library(ggplot2)
+
+Suitcase_Products <- data.frame()
+
+SuitcaseLink1 = "https://www.amazon.co.uk/s?k=suitcase&crid=1DXWJU6CW56YD&sprefix=suitcase%2Caps%2C438&ref=nb_sb_noss_1"
+
+Session4 <- bow(SuitcaseLink1, user_agent = "Educational Purpose")
+
+ScrapeNodes <- function(selector){
+scrape(Session4) %>%
+  html_nodes(selector) %>%
+  html_text(trim = TRUE)
+}
+
+ScrapedCategory <- "Suitcase"
+
+ScrapedSuitcaseName <-   ScrapeNodes("span.a-size-base-plus.a-color-base.a-text-normal")
+ScrapedSuitcaseName <- ScrapedSuitcaseName[1:45]
+
+ScrapedSuitcasePrice <- ScrapeNodes("span.a-offscreen")
+ScrapedSuitcasePrice <- ScrapedSuitcasePrice[1:45]
+
+ScrapedSuitcaseRatings <- ScrapeNodes("span.a-icon-alt")
+ScrapedSuitcaseRatings <- ScrapedSuitcaseRatings[1:45]
+
+ScrapedSuitcaseReviews <- ScrapeNodes("span.a-size-base.s-underline-text")
+ScrapedSuitcaseReviews <- ScrapedSuitcaseReviews[1:45]
+
+Suitcase_Products <- rbind(Suitcase_Products, data.frame(Category = ScrapedCategory,Name = ScrapedSuitcaseName,
+                    Price = ScrapedSuitcasePrice,
+                    Ratings = ScrapedSuitcaseRatings,
+                    Num_of_reviews = ScrapedSuitcaseReviews))
+                    
+###############
+
+SuitcaseLink2 = "https://www.amazon.co.uk/s?k=suitcase&page=2&crid=1DXWJU6CW56YD&qid=1708515068&sprefix=suitcase%2Caps%2C438&ref=sr_pg_2"
+
+Session5 <- bow(SuitcaseLink2, user_agent = "Educational Purpose")
+
+ScrapedCategory <- "Suitcase"
+
+ScrapedSuitcaseName2 <- ScrapeNodes("span.a-size-base-plus.a-color-base.a-text-normal")
+ScrapedSuitcaseName2 <- ScrapedSuitcaseName2[1:45]
+
+ScrapedSuitcasePrice2 <- ScrapeNodes("span.a-price-whole")
+ScrapedSuitcasePrice2 <- ScrapedSuitcasePrice2[1:45]
+
+ScrapedSuitcaseRatings2 <- ScrapeNodes("div.a-row.a-size-small")
+ScrapedSuuitcaseRatings2 <- ScrapedSuitcaseRatings2[1:45]
+
+ScrapedSuitcaseReviews2 <- ScrapeNodes("span.a-size-base.s-underline-text")
+ScrapedSuitcaseReviews2 <- ScrapedSuitcaseReviews2[1:45]
+
+Suitcase_Products <- rbind(Suitcase_Products, data.frame(Category = ScrapedCategory,Name = ScrapedSuitcaseName,
+                    Price = ScrapedSuitcasePrice,
+                    Ratings = ScrapedSuitcaseRatings,
+                    Num_of_reviews = ScrapedSuitcaseReviews))
+
+###############
+
+SuitcaseLink3 = "https://www.amazon.co.uk/s?k=suitcase&page=3&crid=1DXWJU6CW56YD&qid=1708515925&sprefix=suitcase%2Caps%2C438&ref=sr_pg_3"
+
+Session6 <- bow(SuitcaseLink3, user_agent = "Educational Purpose")
+
+ScrapedCategory <- "Suitcase"
+
+ScrapedSuitcaseName3 <- ScrapeNodes("div.a-section.a-spacing-small puis-padding-left-small.puis-padding-right-small")
+ScrapedSuitcaseName3 <- ScrapedSuitcaseName3[1:45]
+
+ScrapedSuitcasePrice3 <- ScrapeNodes("span.a-price-whole")
+ScrapedSuitcasePrice3 <- ScrapedSuitcasePrice3[1:45]
+
+ScrapedSuitcaseRatings3 <- ScrapeNodes("div.a-row a-size-small")
+ScrapedSuitcaseRatings3 <- ScrapedSuitcaseRatings3[1:45]
+
+ScrapedSuitcaseReviews3 <- ScrapeNodes("span.a-size-base.s-underline-text")
+ScrapedSuitcaseReviews3 <- ScrapedSuitcaseReviews3[1:45]
+
+Suitcase_Products <- rbind(Suitcase_Products, data.frame(Category = ScrapedCategory,Name = ScrapedSuitcaseName,
+                    Price = ScrapedSuitcasePrice, Ratings = ScrapedSuitcaseRatings,Num_of_reviews = ScrapedSuitcaseReviews))
+
+Suitcase_Products <- Suitcase_Products[1:100,]
+#write.csv(Suitcase_Products,"Suitcase_Products.csv")
+
+#View(Suitcase_Products)
+```
+
+Merging Two Products
+
+```{r}
+Scraped_Products <- rbind(Handbags_Products, Suitcase_Products)
+#write.csv(Scraped_Products, "ByCategory.csv")
+#View(Scraped_Products)
+```
+
+10 Products
+
+Product1
+
+```{r}
+Product_1 = data.frame()
+scrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+scrapeProductDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  scrapedprodName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")[1:10]
+  scrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  scrapedReview <- scrapeNodes(session, "span.a-letter-space")[1:10]
+  scrapedDate <- scrapeNodes(session, "span.review-date")[1:10]
+  scrapedprodRating <- scrapeNodes(session, "div.a-row")[1:10]
+ 
+  product <- data.frame(category = scrapedCategory,
+                        name = rep(scrapedprodName, each = 10),
+                        reviewer = scrapedReviewer,
+                        review = scrapedReview,
+                        date = scrapedDate,
+                        ratings = scrapedprodRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-reviews/B09GW13FN4/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-reviews/B09GW13FN4/ref=cm_cr_getr_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-reviews/B09GW13FN4/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_1 <- rbind(product1, product2, product3)
+
+Product_1
+
+write.csv(Product_1,"Product_1.csv")
+
+```
+```
+
