@@ -1,6 +1,9 @@
 ---
 title: "Lab Exercise 1_Pineda"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 date: "2024-02-08"
 ---
 
@@ -95,7 +98,7 @@ Handbags_Products <- rbind(Handbags_Products, data.frame(Category = ScrapedCateg
                 Price = ScrapedPrice, Ratings = ScrapedRatings,                     Num_of_reviews = ScrapedReviews))
 
 Handbags_Products <- Handbags_Products[1:100,]
-#write.csv(Handbags_Products,"Handbags_Products.csv")
+write.csv(Handbags_Products,"Handbags_Products.csv")
 #View(Handbag_Products)
 
 ```
@@ -191,7 +194,7 @@ Suitcase_Products <- rbind(Suitcase_Products, data.frame(Category = ScrapedCateg
                     Price = ScrapedSuitcasePrice, Ratings = ScrapedSuitcaseRatings,Num_of_reviews = ScrapedSuitcaseReviews))
 
 Suitcase_Products <- Suitcase_Products[1:100,]
-#write.csv(Suitcase_Products,"Suitcase_Products.csv")
+write.csv(Suitcase_Products,"Suitcase_Products.csv")
 
 #View(Suitcase_Products)
 ```
@@ -200,7 +203,8 @@ Merging Two Products
 
 ```{r}
 Scraped_Products <- rbind(Handbags_Products, Suitcase_Products)
-#write.csv(Scraped_Products, "ByCategory.csv")
+
+write.csv(Scraped_Products, "ByCategory.csv")
 #View(Scraped_Products)
 ```
 
@@ -210,7 +214,7 @@ Product1
 
 ```{r}
 Product_1 = data.frame()
-scrapedCategory <- "Handbags"
+ScrapedCategory <- "Handbags"
 scrapeNodes <- function(session, selector) {
   session %>%
     scrape() %>%
@@ -219,21 +223,21 @@ scrapeNodes <- function(session, selector) {
 }
 
 
-scrapeProductDetails <- function(link) {
+ScrapeProdDetails <- function(link) {
   session <- bow(link, user_agent = "For Educational Purpose")
  
-  scrapedprodName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")[1:10]
-  scrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
-  scrapedReview <- scrapeNodes(session, "span.a-letter-space")[1:10]
-  scrapedDate <- scrapeNodes(session, "span.review-date")[1:10]
-  scrapedprodRating <- scrapeNodes(session, "div.a-row")[1:10]
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
  
-  product <- data.frame(category = scrapedCategory,
-                        name = rep(scrapedprodName, each = 10),
-                        reviewer = scrapedReviewer,
-                        review = scrapedReview,
-                        date = scrapedDate,
-                        ratings = scrapedprodRating)
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
  
   return(product)
 }
@@ -248,11 +252,419 @@ link3 <- "https://www.amazon.co.uk/Drop-Womens-Addison-Handle-Chocolate/product-
 product3 <- scrapeProductDetails(link3)
 
 Product_1 <- rbind(product1, product2, product3)
-
 Product_1
 
 write.csv(Product_1,"Product_1.csv")
-
-```
 ```
 
+```{r}
+Product_2 = data.frame()
+ScrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+ScrapeProdDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
+ 
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Kipling-Mini-Womens-Satchel-34x21x18-5/product-reviews/B0761X3129/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Kipling-Mini-Womens-Satchel-34x21x18-5/product-reviews/B0761X3129/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Kipling-Mini-Womens-Satchel-34x21x18-5/product-reviews/B0761X3129/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_2 <- rbind(product1, product2, product3)
+Product_2
+
+write.csv(Product_2,"Product_2.csv")
+```
+
+```{r}
+Product_3 = data.frame()
+ScrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+ScrapeProdDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
+ 
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Miss-Lulu-Designer-Fashion-Shoulder/product-reviews/B07HC9JNP2/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Miss-Lulu-Designer-Fashion-Shoulder/product-reviews/B07HC9JNP2/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Miss-Lulu-Designer-Fashion-Shoulder/product-reviews/B07HC9JNP2/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_3 <- rbind(product1, product2, product3)
+Product_3
+
+write.csv(Product_3,"Product_3.csv")
+```
+
+```{r}
+Product_4 = data.frame()
+ScrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+ScrapeProdDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
+ 
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Miss-Lulu-Fashion-Handbag-Shoulder/product-reviews/B01N6TXXPD/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Miss-Lulu-Fashion-Handbag-Shoulder/product-reviews/B01N6TXXPD/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Miss-Lulu-Fashion-Handbag-Shoulder/product-reviews/B01N6TXXPD/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_4 <- rbind(product1, product2, product3)
+Product_4
+
+write.csv(Product_4,"Product_4.csv")
+```
+
+```{r}
+Product_5 = data.frame()
+ScrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+ScrapeProdDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
+ 
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Leather-Designer-Top-Handle-Crossbody-Shoulder/product-reviews/B07Q721CNC/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Leather-Designer-Top-Handle-Crossbody-Shoulder/product-reviews/B07Q721CNC/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Leather-Designer-Top-Handle-Crossbody-Shoulder/product-reviews/B07Q721CNC/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_5 <- rbind(product1, product2, product3)
+Product_5
+
+write.csv(Product_5,"Product_5.csv")
+```
+
+```{r}
+Product_6 = data.frame()
+ScrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+ScrapeProdDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
+ 
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Kipling-Gabbie-Womens-Cross-Body-Active/product-reviews/B07DKHD5P2/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Kipling-Gabbie-Womens-Cross-Body-Active/product-reviews/B07DKHD5P2/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Kipling-Gabbie-Womens-Cross-Body-Active/product-reviews/B07DKHD5P2/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_6 <- rbind(product1, product2, product3)
+Product_6
+
+write.csv(Product_6,"Product_6.csv")
+```
+
+```{r}
+Product_7 = data.frame()
+ScrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+ScrapeProdDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
+ 
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Signare-Tapestry-Shoulder-Colourful-CONV-PUPPY/product-reviews/B078KG4964/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Signare-Tapestry-Shoulder-Colourful-CONV-PUPPY/product-reviews/B078KG4964/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Signare-Tapestry-Shoulder-Colourful-CONV-PUPPY/product-reviews/B078KG4964/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_7 <- rbind(product1, product2, product3)
+Product_7
+
+write.csv(Product_7,"Product_7.csv")
+```
+
+```{r}
+Product_8 = data.frame()
+ScrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+ScrapeProdDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
+ 
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Michael-Kors-Travel-Convertible-Carryall/product-reviews/B097J2QGCZ/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Michael-Kors-Travel-Convertible-Carryall/product-reviews/B097J2QGCZ/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Michael-Kors-Travel-Convertible-Carryall/product-reviews/B097J2QGCZ/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_8 <- rbind(product1, product2, product3)
+Product_8
+
+write.csv(Product_8,"Product_8.csv")
+```
+
+```{r}
+Product_9 = data.frame()
+ScrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+ScrapeProdDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
+ 
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Lorenz-Leather-Handbag-1968-Black/product-reviews/B0028RP3KA/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Lorenz-Leather-Handbag-1968-Black/product-reviews/B0028RP3KA/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Lorenz-Leather-Handbag-1968-Black/product-reviews/B0028RP3KA/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_9 <- rbind(product1, product2, product3)
+Product_9
+
+write.csv(Product_9,"Product_9.csv")
+```
+
+```{r}
+Product_10 = data.frame()
+ScrapedCategory <- "Handbags"
+scrapeNodes <- function(session, selector) {
+  session %>%
+    scrape() %>%
+    html_nodes(selector) %>%
+    html_text(trim = TRUE)
+}
+
+
+ScrapeProdDetails <- function(link) {
+  session <- bow(link, user_agent = "For Educational Purpose")
+ 
+  ScrapedProdName <- scrapeNodes(session, "h1.a-size-large.a-text-ellipsis")
+  ScrapedReviewer <- scrapeNodes(session, "span.a-profile-name")[1:10]
+  ScrapedReview <- scrapeNodes(session, "span.a-size-base.review-text.review-text-content")[1:10]
+  ScrapedDate <- scrapeNodes(session, "span.a-size-base.a-color-secondary.review-date")[1:10]
+  ScrapedProdRating <- scrapeNodes(session, "span.a-icon-alt")[1:10]
+ 
+  product <- data.frame(category = ScrapedCategory,
+                        name = rep(ScrapedProdName, each = 10),
+                        reviewer = ScrapedReviewer,
+                        review = ScrapedReview,
+                        date = ScrapedDate,
+                        ratings = ScrapedProdRating)
+ 
+  return(product)
+}
+
+link1 <- "https://www.amazon.co.uk/Travelon-Anti-theft-Heritage-Crossbody-Indigo/product-reviews/B01CG1J6NC/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+product1 <- scrapeProductDetails(link1)
+
+link2 <- "https://www.amazon.co.uk/Travelon-Anti-theft-Heritage-Crossbody-Indigo/product-reviews/B01CG1J6NC/ref=cm_cr_arp_d_paging_btm_next_2?ie=UTF8&reviewerType=all_reviews&pageNumber=2"
+product2 <- scrapeProductDetails(link2)
+
+link3 <- "https://www.amazon.co.uk/Travelon-Anti-theft-Heritage-Crossbody-Indigo/product-reviews/B01CG1J6NC/ref=cm_cr_getr_d_paging_btm_next_3?ie=UTF8&reviewerType=all_reviews&pageNumber=3"
+product3 <- scrapeProductDetails(link3)
+
+Product_10 <- rbind(product1, product2, product3)
+Product_10
+
+write.csv(Product_10,"Product_10.csv")
+```
+
+```{r}
+All_Reviews <- rbind(Product_1, Product_2, Product_3, Product_4, Product_5, Product_6, Product_7, Product_8, Product_9, Product_10)
+#All_Reviews
+
+write.csv(All_Reviews,"All_reviews.csv")
+```
