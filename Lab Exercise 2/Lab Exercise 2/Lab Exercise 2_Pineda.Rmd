@@ -1,6 +1,8 @@
 ---
 title: "Lab Exercise 2"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 date: "2024-03-14"
 ---
 
@@ -9,7 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
-
 library(dplyr)
 library(rvest)
 library(polite)
@@ -1820,8 +1821,8 @@ library(selectr)
 Product44 <- data.frame()
 
 for (page in 1:5) {
-  link43 <- paste0("https://www.amazon.com.au/adidas-Unisex-Sneaker-Preloved-Scarlet/product-reviews/B0C3JXC564/ref=cm_cr_dp_d_show_all_btm_next_", page, "?ie=UTF8&reviewerType=all_reviews&pageNumber=", page)
-  session43 <- bow(link43, user_agent = "Educational Purpose")
+  link44 <- paste0("https://www.amazon.com.au/adidas-Unisex-Sneaker-Preloved-Scarlet/product-reviews/B0C3JXC564/ref=cm_cr_dp_d_show_all_btm_next_", page, "?ie=UTF8&reviewerType=all_reviews&pageNumber=", page)
+  session44 <- bow(link44, user_agent = "Educational Purpose")
 
   scrapeNodes <- function(selector) {
     scrape(session43) %>%
@@ -2109,4 +2110,14 @@ for (page in 1:5) {
 }
 
 View(Product50)
+```
+
+```{r}
+
+AllProduct = data.frame();
+
+AllProduct <- rbind(AllProduct, Product1, Product2, Product3, Product4, Product5, Product6, Product7, Product8, Product9, Product10, Product11, Product12, Product13, Product14, Product15, Product16, Product17, Product18, Product19, Product20, Product21, Product22, Product23, Product24, Product25, Product26, Product27, Product28, Product29, Product30, Product31, Product32, Product33, Product34, Product35, Product36, Product37, Product38, Product39, Product40, Product41, Product42, Product43, Product44, Product45, Product46, Product47, Product48, Product49, Product50)
+
+View(AllProduct)
+
 ```
